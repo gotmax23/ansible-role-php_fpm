@@ -49,13 +49,27 @@ These variables are set in `defaults/main.yml`:
 ---
 # defaults file for php_fpm
 
+# Sets php version for Debian-based distros to the default for the distro version. 
+# For example, it's 7.3 on Debian 10. See `vars/main.yml` for all values. 
+php_version_debian: "{{ _php_version_debian[ansible_distribution ~ '-' ~ ansible_distribution_major_version] | default(_php_version_debian['default']) }}"
+
+# Sets php version for OpneSuse Leap 
+php_version_opensuse: 7
+
+# Sets php version for Alpine
+php_version_alpine: 7
+
+# Options: `httpd` or `nginx`. 
+# This determines the value of `{{ php_fpm_listen_owner }}` and `{{ php_fpm_listen_group }}`.
+php_webserver: httpd
+
 # The `php_fpm_listen` parameter can be an address:port combination or a path
 # if you want to use a socket. For example: 127.0.0.1:9000
 
 php_fpm_listen: "{{ php_fpm_pid_directory }}/www.sock"
 
 # When using a socket in `php_fpm_listen`, you can set the user and group.
-# Sane defaults are set in `vars/main.yml`
+# Sane defaults (based on value of `{{ php_webserver }}`) are set in `vars/main.yml`
 php_fpm_listen_owner: "{{ php_fpm_owner }}"
 php_fpm_listen_group: "{{ php_fpm_group }}"
 php_fpm_listen_mode: "0666"
