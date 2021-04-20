@@ -1,34 +1,39 @@
 ---
 # vars file for php_fpm
+_php_version_debian:
+  default: 7.3
+  Debian-10: 7.3
+  Debian-testing: 7.4
+  Debian-unstable: 7.4
+  Ubuntu-17: 7.1
+  Ubuntu-18: 7.2
+  Ubuntu-19: 7.3
+  Ubuntu-20: 7.4
 
 _php_fpm_packages:
   default:
     - php-fpm
+  Debian:
+    - "php{{ php_version_debian }}-fpm"
   Alpine:
-    - php7-fpm
+    - "php{{ php_version_alpine }}-fpm"
   Suse:
-    - php7-fpm
+    - "php{{ php_version_suse }}-fpm"
 
 php_fpm_packages: "{{ _php_fpm_packages[ansible_os_family] | default(_php_fpm_packages['default']) }}"
 
 _php_fpm_directory:
   default: /etc
-  Alpine: /etc/php7
-  Debian: /etc/php/7.3/fpm
-  Debian-testing: /etc/php/7.4/fpm
-  Debian-unstable: /etc/php/7.4/fpm
+  Alpine: "/etc/php{{ php_version_alpine }}"
+  Debian: "/etc/php/{{ php_version_debian }}/fpm"
   Fedora: /etc
-  openSUSE Leap: /etc/php7/fpm
-  Ubuntu-17: /etc/php/7.1/fpm
-  Ubuntu-18: /etc/php/7.2/fpm
-  Ubuntu-19: /etc/php/7.2/fpm
-  Ubuntu: /etc/php/7.4/fpm
+  openSUSE Leap: "/etc/php{{ php_version_suse }}/fpm"
 
-php_fpm_directory: "{{ _php_fpm_directory[ansible_distribution ~ '-' ~ ansible_distribution_major_version] | default(_php_fpm_directory[ansible_distribution] | default(_php_fpm_directory['default'])) }}"
+php_fpm_directory: "{{ _php_fpm_directory[ansible_distribution] | default(_php_fpm_directory[ansible_os_family] | default(_php_fpm_directory['default'])) }}"
 
 _php_fpm_pid_directory:
   default: /run/php-fpm
-  Alpine: /run/php-fpm7
+  Alpine: "/run/php-fpm{{ php_version_alpine }}"
   Debian: /run/php
   RedHat: /run/php-fpm
   Suse: /var/run
@@ -50,30 +55,30 @@ php_fpm_include_directory: "{{ _php_fpm_include_directory[ansible_os_family] | d
 
 _php_fpm_service:
   default: php-fpm
-  Alpine: php-fpm7
-  Debian-9: php7.0-fpm.service
-  Debian: php7.3-fpm.service
-  Debian-testing: php7.4-fpm.service
-  Debian-unstable: php7.4-fpm.service
-  Fedora: php-fpm
+  Alpine: "php-fpm{{ php_version_alpine }}"
+  Debian: "php{{ php_version_debian }}-fpm.service"
   openSUSE Leap: php-fpm
-  Ubuntu-17: php7.1-fpm.service
-  Ubuntu-18: php7.2-fpm.service
-  Ubuntu-19: php7.2-fpm.service
-  Ubuntu: php7.4-fpm.service
 
-php_fpm_service: "{{ _php_fpm_service[ansible_distribution ~ '-' ~ ansible_distribution_major_version] | default(_php_fpm_service[ansible_distribution] | default(_php_fpm_service['default'])) }}"
+php_fpm_service: "{{ _php_fpm_service[ansible_distribution] | default(_php_fpm_service[ansible_os_family] | default(_php_fpm_service['default'])) }}"
 
 _php_fpm_owner:
-  default: apache
-  Debian: www-data
-  Suse: wwwrun
+  httpd:
+    default: apache
+    Debian: www-data
+    Suse: wwwrun
+  nginx:
+    default: nginx
+    Debian: www-data
 
-php_fpm_owner: "{{ _php_fpm_owner[ansible_os_family] | default(_php_fpm_owner['default']) }}"
+php_fpm_owner: "{{ _php_fpm_owner[php_fpm_webserver][ansible_os_family] | default(_php_fpm_owner[php_fpm_webserver]['default']) }}"
 
 _php_fpm_group:
-  default: apache
-  Debian: www-data
-  Suse: www
+  httpd:
+    default: apache
+    Debian: www-data
+    Suse: www
+  nginx:
+    default: nginx
+    Debian: www-data
 
-php_fpm_group: "{{ _php_fpm_group[ansible_os_family] | default(_php_fpm_group['default']) }}"
+php_fpm_group: "{{ _php_fpm_group[php_fpm_webserver][ansible_os_family] | default(_php_fpm_group[php_fpm_webserver]['default']) }}"
