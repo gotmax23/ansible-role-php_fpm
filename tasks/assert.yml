@@ -22,7 +22,7 @@
   ansible.builtin.assert:
     that:
       - php_webserver is defined
-      - php_webserer is string
+      - php_webserver is string
       - php_webserver in ["httpd", "nginx"]
 
 - name: test if php_fpm_listen is set correctly
