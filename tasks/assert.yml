@@ -1,5 +1,30 @@
 ---
 
+- name: test if php_version_debian is set correctly
+  ansible.builtin.assert:
+    that:
+      - php_version_debian is defined
+      - php_version_debian is number
+
+- name: test if php_version_suse is set correctly
+  ansible.builtin.assert:
+    that:
+      - php_version_suse is defined
+      - php_version_suse is number
+
+- name: test if php_version_alpine is set correctly
+  ansible.builtin.assert:
+    that:
+      - php_version_alpine is defined
+      - php_version_alpine is number
+
+- name: test if php_webserver is set correctly
+  ansible.builtin.assert:
+    that:
+      - php_webserver is defined
+      - php_webserer is string
+      - php_webserver in ["httpd", "nginx"]
+
 - name: test if php_fpm_listen is set correctly
   ansible.builtin.assert:
     that:
