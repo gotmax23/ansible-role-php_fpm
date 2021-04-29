@@ -4,7 +4,7 @@
   ansible.builtin.assert:
     that:
       - php_version_debian is defined
-      - php_version_debian is number
+      - php_version_debian is string
 
 - name: test if php_version_suse is set correctly
   ansible.builtin.assert:
