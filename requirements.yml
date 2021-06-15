@@ -8,5 +8,7 @@ roles:
   - name: robertdebock.selinux
   - name: robertdebock.httpd
 collections:
+  - name: community.docker
+  - name: community.general
   - name: ansible.posix
   - name: community.crypto
